@@ -179,12 +179,16 @@ String serialise(struct ControlState ControlState)
 
 byte getDirection()
 {
-  if (state.switch1.isEngaged && !state.switch2.isEngaged) {
+  if (state.switch1.isEngaged && !state.switch2.isEngaged)
+  {
     return 1;
   }
-  if (!state.switch1.isEngaged && state.switch2.isEngaged) {
+  if (!state.switch1.isEngaged && state.switch2.isEngaged)
+  {
     return 0;
-  } else {
+  }
+  else
+  {
     return 1;
   }
 }
@@ -199,11 +203,13 @@ struct ControlState prepareControlState()
 {
   struct ControlState controlState;
 
-  if (state.leftButton.isEngaged) {
+  if (state.leftButton.isEngaged)
+  {
     controlState.leftStepper.direction = getDirection();
     controlState.leftStepper.speedLevel = calcSpeedLevel();
   }
-  if (state.rightButton.isEngaged) {
+  if (state.rightButton.isEngaged)
+  {
     controlState.rightStepper.direction = getDirection();
     controlState.leftStepper.speedLevel = calcSpeedLevel();
   }
@@ -213,18 +219,19 @@ struct ControlState prepareControlState()
 
 bool hasStateChanged(struct State &newState)
 {
-  if(
-    state.switch1.isEngaged == newState.switch1.isEngaged &&
-    state.switch2.isEngaged == newState.switch2.isEngaged &&
-    state.switch3.isEngaged == newState.switch3.isEngaged &&
-    state.switch4.isEngaged == newState.switch4.isEngaged &&
-    state.leftButton.isEngaged == newState.leftButton.isEngaged &&
-    state.rightButton.isEngaged == newState.rightButton.isEngaged &&
-    state.potmeter.value == newState.potmeter.value
-  )
+  if (
+      state.switch1.isEngaged == newState.switch1.isEngaged &&
+      state.switch2.isEngaged == newState.switch2.isEngaged &&
+      state.switch3.isEngaged == newState.switch3.isEngaged &&
+      state.switch4.isEngaged == newState.switch4.isEngaged &&
+      state.leftButton.isEngaged == newState.leftButton.isEngaged &&
+      state.rightButton.isEngaged == newState.rightButton.isEngaged &&
+      state.potmeter.value == newState.potmeter.value)
   {
     return false;
-  } else {
+  }
+  else
+  {
     return true;
   }
 }
@@ -232,22 +239,25 @@ bool hasStateChanged(struct State &newState)
 void listen()
 {
   struct State newState;
-	while (newData == false)
-	{
-		newState.switch1.isEngaged = switch1.isEngaged();
-		newState.switch2.isEngaged = switch2.isEngaged();
-		newState.switch3.isEngaged = switch3.isEngaged();
-		newState.switch4.isEngaged = switch4.isEngaged();
-		newState.leftButton.isEngaged = leftButton.isEngaged();
-		newState.rightButton.isEngaged = rightButton.isEngaged();
+  while (newData == false)
+  {
+    newState.switch1.isEngaged = switch1.isEngaged();
+    newState.switch2.isEngaged = switch2.isEngaged();
+    newState.switch3.isEngaged = switch3.isEngaged();
+    newState.switch4.isEngaged = switch4.isEngaged();
+    newState.leftButton.isEngaged = leftButton.isEngaged();
+    newState.rightButton.isEngaged = rightButton.isEngaged();
     newState.potmeter.value = potmeter.getValue();
-    if(hasStateChanged(newState)) {
+    if (hasStateChanged(newState))
+    {
       state = newState;
       newData = true;
-    } else {
+    }
+    else
+    {
       return;
     }
-	}
+  }
 }
 
 void setup()
@@ -258,12 +268,12 @@ void setup()
 void loop()
 {
   listen();
-	if (newData)
-	{
+  if (newData)
+  {
     struct ControlState controlState = prepareControlState();
-		String payload = serialise(controlState);
+    String payload = serialise(controlState);
     Serial.println(payload);
     Serial.println("Dispatched");
-		newData = false;
-	}
+    newData = false;
+  }
 }
